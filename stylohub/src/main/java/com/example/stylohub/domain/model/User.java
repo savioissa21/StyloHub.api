@@ -1,95 +1,84 @@
 package com.example.stylohub.domain.model;
 
+import com.example.stylohub.domain.event.UserCreatedEvent;
+import com.example.stylohub.domain.event.UserDeactivatedEvent;
+import com.example.stylohub.domain.exception.BusinessRuleViolationException;
+import com.example.stylohub.domain.exception.DomainValidationException;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-/**
- * Aggregate Root responsável pela identidade, segurança e acesso do criador à plataforma.
- */
 public class User extends AggregateRoot {
 
     private final UUID id;
     private String email;
-    private String passwordHash; // O domínio NUNCA deve conhecer senhas em texto limpo
+    private String passwordHash;
     private final OAuthProvider provider;
     private boolean isActive;
 
-    // Regex simples para validar o formato do e-mail
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
-    /**
-     * Construtor para utilizadores tradicionais (Email e Senha).
-     */
     public User(UUID id, String email, String passwordHash) {
-        this.validateEmail(email);
+        validateEmail(email);
         if (passwordHash == null || passwordHash.isBlank()) {
-            throw new IllegalArgumentException("A hash da senha é obrigatória para registos locais.");
+            throw new DomainValidationException("A hash da senha é obrigatória para registos locais.");
         }
-        
         this.id = id;
         this.email = email.toLowerCase();
         this.passwordHash = passwordHash;
         this.provider = OAuthProvider.LOCAL;
         this.isActive = true;
+        this.registerEvent(new UserCreatedEvent(this.id, this.email, OAuthProvider.LOCAL, LocalDateTime.now()));
     }
 
-    /**
-     * Construtor para utilizadores de Login Social (Google/Apple).
-     */
     public User(UUID id, String email, OAuthProvider provider) {
-        this.validateEmail(email);
+        validateEmail(email);
         if (provider == null || provider == OAuthProvider.LOCAL) {
-            throw new IllegalArgumentException("Provedor OAuth inválido para este tipo de registo.");
+            throw new DomainValidationException("Provedor OAuth inválido para este tipo de registo.");
         }
-
         this.id = id;
         this.email = email.toLowerCase();
-        this.passwordHash = null; // Logins sociais não têm senha na nossa base de dados
+        this.passwordHash = null;
         this.provider = provider;
         this.isActive = true;
+        this.registerEvent(new UserCreatedEvent(this.id, this.email, provider, LocalDateTime.now()));
     }
 
-    /**
-     * Regra de negócio: Atualização de e-mail.
-     */
     public void changeEmail(String newEmail) {
-        this.validateEmail(newEmail);
+        validateEmail(newEmail);
         this.email = newEmail.toLowerCase();
-        // Aqui poderíamos disparar um evento: this.registerEvent(new EmailChangedEvent(...));
     }
 
-    /**
-     * Regra de negócio: Alteração de senha.
-     */
     public void changePassword(String newPasswordHash) {
         if (this.provider != OAuthProvider.LOCAL) {
-            throw new IllegalStateException("Contas criadas via " + this.provider + " não podem alterar a senha diretamente.");
+            throw new BusinessRuleViolationException(
+                "Contas criadas via " + this.provider + " não podem alterar a senha diretamente."
+            );
         }
         if (newPasswordHash == null || newPasswordHash.isBlank()) {
-            throw new IllegalArgumentException("A nova hash de senha é obrigatória.");
+            throw new DomainValidationException("A nova hash de senha é obrigatória.");
         }
         this.passwordHash = newPasswordHash;
     }
 
-    /**
-     * Desativa a conta do utilizador (Soft Delete).
-     */
     public void deactivate() {
+        if (!this.isActive) {
+            throw new BusinessRuleViolationException("A conta já está desativada.");
+        }
         this.isActive = false;
-        // Disparar evento para cancelar a Subscription e desativar o Profile associado!
+        this.registerEvent(new UserDeactivatedEvent(this.id, this.email, LocalDateTime.now()));
     }
 
     private void validateEmail(String emailToValidate) {
         if (emailToValidate == null || emailToValidate.isBlank()) {
-            throw new IllegalArgumentException("O e-mail não pode estar vazio.");
+            throw new DomainValidationException("O e-mail não pode estar vazio.");
         }
         if (!EMAIL_PATTERN.matcher(emailToValidate).matches()) {
-            throw new IllegalArgumentException("Formato de e-mail inválido.");
+            throw new DomainValidationException("Formato de e-mail inválido: " + emailToValidate);
         }
     }
 
-    // --- GETTERS ---
-    
     public UUID getId() { return id; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
