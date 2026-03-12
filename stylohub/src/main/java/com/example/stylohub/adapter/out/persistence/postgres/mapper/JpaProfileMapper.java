@@ -54,20 +54,14 @@ public class JpaProfileMapper {
 
         Subscription subscription = new Subscription(PlanType.valueOf(entity.getPlanType()));
 
-        Profile profile = new Profile(
-                entity.getId(),
-                entity.getUserId(),
-                entity.getUsername(),
-                theme,
-                subscription
-        );
-
-        entity.getWidgets().stream()
+        List<Widget> widgets = entity.getWidgets().stream()
                 .map(this::toWidgetDomain)
-                .forEach(w -> profile.addWidget(w.getConfig(), w.getOrderIndex()));
+                .toList();
 
-        profile.clearEvents(); // Rehydration não dispara eventos
-        return profile;
+        return Profile.reconstitute(
+                entity.getId(), entity.getUserId(), entity.getUsername(),
+                theme, subscription, widgets
+        );
     }
 
     private WidgetEntity toWidgetEntity(Widget widget, ProfileEntity profileEntity) {
@@ -83,11 +77,7 @@ public class JpaProfileMapper {
 
     private Widget toWidgetDomain(WidgetEntity entity) {
         WidgetConfig config = deserializeConfig(entity.getWidgetType(), entity.getConfigJson());
-        Widget widget = new Widget(entity.getId(), config, entity.getOrderIndex());
-        if (!entity.isActive()) {
-            widget.toggleVisibility();
-        }
-        return widget;
+        return Widget.reconstitute(entity.getId(), config, entity.getOrderIndex(), entity.isActive());
     }
 
     private String serializeConfig(WidgetConfig config) {

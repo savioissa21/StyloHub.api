@@ -102,6 +102,18 @@ public class Profile extends AggregateRoot {
                 .orElseThrow(() -> new ResourceNotFoundException("Widget", widgetId));
     }
 
+    /**
+     * Factory para reconstituição a partir da persistência.
+     * Bypassa validações de negócio de criação e não dispara eventos.
+     */
+    public static Profile reconstitute(UUID id, UUID userId, String username,
+                                       Theme theme, Subscription subscription,
+                                       List<Widget> widgets) {
+        Profile profile = new Profile(id, userId, username, theme, subscription);
+        profile.widgets.addAll(widgets);
+        return profile;
+    }
+
     public UUID getId() { return id; }
     public UUID getUserId() { return userId; }
     public String getUsername() { return username; }

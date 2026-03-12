@@ -47,6 +47,16 @@ public class Widget {
         this.orderIndex = newOrderIndex;
     }
 
+    /**
+     * Factory para reconstituição a partir da persistência.
+     * Não dispara eventos, não valida regras de negócio de criação.
+     */
+    public static Widget reconstitute(UUID id, WidgetConfig config, int orderIndex, boolean isActive) {
+        Widget widget = new Widget(id, config, orderIndex);
+        if (!isActive) widget.isActive = false;
+        return widget;
+    }
+
     public UUID getId() { return id; }
     public WidgetConfig getConfig() { return config; }
     public int getOrderIndex() { return orderIndex; }
