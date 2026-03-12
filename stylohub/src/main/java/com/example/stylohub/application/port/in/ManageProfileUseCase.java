@@ -4,6 +4,7 @@ import com.example.stylohub.application.command.AddWidgetCommand;
 import com.example.stylohub.application.command.CreateProfileCommand;
 import com.example.stylohub.application.command.UpdateThemeCommand;
 import com.example.stylohub.application.command.UpdateWidgetCommand;
+import com.example.stylohub.domain.model.PlanType;
 import com.example.stylohub.domain.model.Profile;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public interface ManageProfileUseCase {
     Profile removeWidget(UUID profileId, UUID widgetId);
     Profile reorderWidgets(UUID profileId, List<UUID> orderedWidgetIds);
     Profile toggleWidgetVisibility(UUID profileId, UUID widgetId);
+    Profile upgradeSubscription(UUID profileId, PlanType newPlan);
     Profile getProfileByUsername(String username);
     Profile getProfileByUserId(UUID userId);
 }

@@ -8,7 +8,6 @@ import com.example.stylohub.application.port.in.ManageProfileUseCase;
 import com.example.stylohub.application.port.out.EventPublisherPort;
 import com.example.stylohub.application.port.out.ProfileRepositoryPort;
 import com.example.stylohub.domain.exception.BusinessRuleViolationException;
-import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.exception.ResourceNotFoundException;
 import com.example.stylohub.domain.model.*;
 import com.example.stylohub.domain.model.config.*;
@@ -134,6 +133,13 @@ public class ProfileService implements ManageProfileUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Widget", widgetId))
                 .toggleVisibility();
 
+        return profileRepo.save(profile);
+    }
+
+    @Override
+    public Profile upgradeSubscription(UUID profileId, PlanType newPlan) {
+        Profile profile = loadProfile(profileId);
+        profile.upgradeSubscription(new Subscription(newPlan));
         return profileRepo.save(profile);
     }
 

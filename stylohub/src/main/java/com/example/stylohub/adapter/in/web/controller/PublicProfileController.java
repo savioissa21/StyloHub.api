@@ -1,40 +1,40 @@
 package com.example.stylohub.adapter.in.web.controller;
 
+import com.example.stylohub.adapter.in.web.cache.ProfileCacheService;
 import com.example.stylohub.adapter.in.web.dto.ProfileResponse;
-import com.example.stylohub.adapter.in.web.mapper.WebProfileMapper;
-import com.example.stylohub.application.port.in.ManageProfileUseCase;
 import com.example.stylohub.application.port.in.TrackAnalyticsUseCase;
-import com.example.stylohub.domain.model.Profile;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/p")
+@Tag(name = "Public Profiles", description = "Acesso público aos perfis dos criadores")
 public class PublicProfileController {
 
-    private final ManageProfileUseCase profileUseCase;
+    private final ProfileCacheService profileCacheService;
     private final TrackAnalyticsUseCase analyticsUseCase;
-    private final WebProfileMapper mapper;
 
-    public PublicProfileController(ManageProfileUseCase profileUseCase,
-                                   TrackAnalyticsUseCase analyticsUseCase,
-                                   WebProfileMapper mapper) {
-        this.profileUseCase = profileUseCase;
+    public PublicProfileController(ProfileCacheService profileCacheService,
+                                   TrackAnalyticsUseCase analyticsUseCase) {
+        this.profileCacheService = profileCacheService;
         this.analyticsUseCase = analyticsUseCase;
-        this.mapper = mapper;
     }
 
     @GetMapping("/{username}")
+    @Operation(summary = "Retorna o perfil público de um criador pelo username")
     ProfileResponse getPublicProfile(@PathVariable String username) {
-        Profile profile = profileUseCase.getProfileByUsername(username);
-        analyticsUseCase.recordProfileView(profile.getId());
-        return mapper.toPublicResponse(profile);
+        ProfileResponse response = profileCacheService.getPublicProfile(username);
+        analyticsUseCase.recordProfileView(response.id());
+        return response;
     }
 
     @PostMapping("/{username}/widgets/{widgetId}/click")
+    @Operation(summary = "Registra um clique num widget (para analytics)")
     void recordWidgetClick(@PathVariable String username, @PathVariable UUID widgetId) {
-        Profile profile = profileUseCase.getProfileByUsername(username);
-        analyticsUseCase.recordWidgetClick(profile.getId(), widgetId);
+        ProfileResponse response = profileCacheService.getPublicProfile(username);
+        analyticsUseCase.recordWidgetClick(response.id(), widgetId);
     }
 }

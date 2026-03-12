@@ -65,7 +65,7 @@ public class Profile extends AggregateRoot {
 
         Widget newWidget = new Widget(UUID.randomUUID(), config, order);
         this.widgets.add(newWidget);
-        this.registerEvent(new WidgetAddedEvent(this.id, newWidget.getId(), config.getType(), LocalDateTime.now()));
+        this.registerEvent(new WidgetAddedEvent(this.id, this.username, newWidget.getId(), config.getType(), LocalDateTime.now()));
         return newWidget;
     }
 
@@ -75,7 +75,7 @@ public class Profile extends AggregateRoot {
         }
         Widget widget = findWidgetById(widgetId);
         this.widgets.remove(widget);
-        this.registerEvent(new WidgetRemovedEvent(this.id, widgetId, LocalDateTime.now()));
+        this.registerEvent(new WidgetRemovedEvent(this.id, this.username, widgetId, LocalDateTime.now()));
     }
 
     public void reorderWidgets(List<UUID> orderedWidgetIds) {

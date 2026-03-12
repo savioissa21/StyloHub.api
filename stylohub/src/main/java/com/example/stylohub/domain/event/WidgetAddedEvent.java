@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public record WidgetAddedEvent(
         UUID profileId,
+        String username,
         UUID widgetId,
         WidgetType widgetType,
         LocalDateTime occurredOn

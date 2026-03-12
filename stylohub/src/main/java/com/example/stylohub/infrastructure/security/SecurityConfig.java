@@ -30,7 +30,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Públicos — sem autenticação
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/p/**").permitAll()  // Perfis públicos
+                        .requestMatchers(HttpMethod.GET, "/api/p/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/p/**").permitAll()  // Widget click tracking
+                        .requestMatchers(HttpMethod.POST, "/api/webhooks/**").permitAll()  // Stripe webhooks
+                        // Swagger UI / OpenAPI
+                        .requestMatchers(
+                                "/swagger-ui.html", "/swagger-ui/**",
+                                "/v3/api-docs", "/v3/api-docs/**"
+                        ).permitAll()
                         // Privados — requer JWT
                         .anyRequest().authenticated()
                 )
