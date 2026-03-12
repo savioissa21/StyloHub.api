@@ -1,5 +1,7 @@
 package com.example.stylohub.domain.model;
 
-public class BackgroundType {
-    
+public enum BackgroundType {
+    SOLID_COLOR,
+    GRADIENT,
+    IMAGE
 }
