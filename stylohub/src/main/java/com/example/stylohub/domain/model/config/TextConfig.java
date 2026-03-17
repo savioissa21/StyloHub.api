@@ -2,7 +2,11 @@ package com.example.stylohub.domain.model.config;
 
 import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.model.WidgetType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TextConfig implements WidgetConfig {
 
     private static final int MAX_CONTENT_LENGTH = 500;
@@ -10,11 +14,17 @@ public class TextConfig implements WidgetConfig {
     private final String title;
     private final String content;
 
-    public TextConfig(String title, String content) {
+    @JsonCreator
+    public TextConfig(
+            @JsonProperty("title") String title,
+            @JsonProperty("content") String content) {
         this.title = title;
         this.content = content;
         this.validate();
     }
+
+    public String getTitle() { return title; }
+    public String getContent() { return content; }
 
     @Override
     public WidgetType getType() {
@@ -32,7 +42,4 @@ public class TextConfig implements WidgetConfig {
             );
         }
     }
-
-    public String getTitle() { return title; }
-    public String getContent() { return content; }
 }

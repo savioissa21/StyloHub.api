@@ -2,18 +2,28 @@ package com.example.stylohub.domain.model.config;
 
 import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.model.WidgetType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SpotifyConfig implements WidgetConfig {
 
     // Formato: spotify:track:4iV5W9uYEdYUVa79Axb7Rh ou spotify:album:... ou spotify:playlist:...
     private final String embedUri;
     private final boolean compact;
 
-    public SpotifyConfig(String embedUri, boolean compact) {
+    @JsonCreator
+    public SpotifyConfig(
+            @JsonProperty("embedUri") String embedUri,
+            @JsonProperty("compact") boolean compact) {
         this.embedUri = embedUri;
         this.compact = compact;
         this.validate();
     }
+
+    public String getEmbedUri() { return embedUri; }
+    public boolean isCompact() { return compact; }
 
     @Override
     public WidgetType getType() {
@@ -33,7 +43,4 @@ public class SpotifyConfig implements WidgetConfig {
             );
         }
     }
-
-    public String getEmbedUri() { return embedUri; }
-    public boolean isCompact() { return compact; }
 }

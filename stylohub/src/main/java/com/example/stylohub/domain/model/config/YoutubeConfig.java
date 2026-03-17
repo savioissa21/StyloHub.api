@@ -2,19 +2,31 @@ package com.example.stylohub.domain.model.config;
 
 import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.model.WidgetType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class YoutubeConfig implements WidgetConfig {
 
     private final String videoId;
     private final boolean autoPlay;
     private final boolean showControls;
 
-    public YoutubeConfig(String videoId, boolean autoPlay, boolean showControls) {
+    @JsonCreator
+    public YoutubeConfig(
+            @JsonProperty("videoId") String videoId,
+            @JsonProperty("autoPlay") boolean autoPlay,
+            @JsonProperty("showControls") boolean showControls) {
         this.videoId = videoId;
         this.autoPlay = autoPlay;
         this.showControls = showControls;
         this.validate();
     }
+
+    public String getVideoId() { return videoId; }
+    public boolean isAutoPlay() { return autoPlay; }
+    public boolean isShowControls() { return showControls; }
 
     @Override
     public WidgetType getType() {
@@ -30,8 +42,4 @@ public class YoutubeConfig implements WidgetConfig {
             throw new DomainValidationException("O ID do vídeo do YouTube deve ter exatamente 11 caracteres.");
         }
     }
-
-    public String getVideoId() { return videoId; }
-    public boolean isAutoPlay() { return autoPlay; }
-    public boolean isShowControls() { return showControls; }
 }

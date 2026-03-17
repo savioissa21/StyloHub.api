@@ -2,25 +2,27 @@ package com.example.stylohub.domain.model.config;
 
 import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.model.WidgetType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfig implements WidgetConfig {
 
     private final String title;
     private final String url;
 
-    public LinkConfig(String title, String url) {
+    @JsonCreator
+    public LinkConfig(
+            @JsonProperty("title") String title,
+            @JsonProperty("url") String url) {
         this.title = title;
         this.url = url;
-        this.validate(); // Valida no momento da criação!
+        this.validate();
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
+    public String getTitle() { return title; }
+    public String getUrl() { return url; }
 
     @Override
     public WidgetType getType() {

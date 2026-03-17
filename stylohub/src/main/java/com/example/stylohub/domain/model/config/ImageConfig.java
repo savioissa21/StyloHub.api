@@ -2,19 +2,31 @@ package com.example.stylohub.domain.model.config;
 
 import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.model.WidgetType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ImageConfig implements WidgetConfig {
 
     private final String imageUrl;
     private final String altText;
     private final String linkUrl; // Opcional: imagem clicável
 
-    public ImageConfig(String imageUrl, String altText, String linkUrl) {
+    @JsonCreator
+    public ImageConfig(
+            @JsonProperty("imageUrl") String imageUrl,
+            @JsonProperty("altText") String altText,
+            @JsonProperty("linkUrl") String linkUrl) {
         this.imageUrl = imageUrl;
         this.altText = altText;
         this.linkUrl = linkUrl;
         this.validate();
     }
+
+    public String getImageUrl() { return imageUrl; }
+    public String getAltText() { return altText; }
+    public String getLinkUrl() { return linkUrl; }
 
     @Override
     public WidgetType getType() {
@@ -38,8 +50,4 @@ public class ImageConfig implements WidgetConfig {
             }
         }
     }
-
-    public String getImageUrl() { return imageUrl; }
-    public String getAltText() { return altText; }
-    public String getLinkUrl() { return linkUrl; }
 }

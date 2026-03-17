@@ -2,9 +2,13 @@ package com.example.stylohub.domain.model.config;
 
 import com.example.stylohub.domain.exception.DomainValidationException;
 import com.example.stylohub.domain.model.WidgetType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LeadFormConfig implements WidgetConfig {
 
     private static final int MAX_FIELDS = 5;
@@ -14,13 +18,23 @@ public class LeadFormConfig implements WidgetConfig {
     private final String successMessage;
     private final List<String> fields; // ex: ["Nome", "Email", "Telefone"]
 
-    public LeadFormConfig(String title, String buttonLabel, String successMessage, List<String> fields) {
+    @JsonCreator
+    public LeadFormConfig(
+            @JsonProperty("title") String title,
+            @JsonProperty("buttonLabel") String buttonLabel,
+            @JsonProperty("successMessage") String successMessage,
+            @JsonProperty("fields") List<String> fields) {
         this.title = title;
         this.buttonLabel = buttonLabel;
         this.successMessage = successMessage;
         this.fields = fields != null ? List.copyOf(fields) : List.of();
         this.validate();
     }
+
+    public String getTitle() { return title; }
+    public String getButtonLabel() { return buttonLabel; }
+    public String getSuccessMessage() { return successMessage; }
+    public List<String> getFields() { return fields; }
 
     @Override
     public WidgetType getType() {
@@ -49,9 +63,4 @@ public class LeadFormConfig implements WidgetConfig {
             throw new DomainValidationException("O formulário de lead deve conter um campo de e-mail.");
         }
     }
-
-    public String getTitle() { return title; }
-    public String getButtonLabel() { return buttonLabel; }
-    public String getSuccessMessage() { return successMessage; }
-    public List<String> getFields() { return fields; }
 }
