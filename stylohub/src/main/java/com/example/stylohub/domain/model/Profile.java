@@ -42,11 +42,6 @@ public class Profile extends AggregateRoot {
         if (newTheme == null) {
             throw new DomainValidationException("O novo tema não pode ser nulo.");
         }
-        if (!this.subscription.canUseCustomTheme() && newTheme.isCustom()) {
-            throw new BusinessRuleViolationException(
-                "O teu plano atual não permite o uso de temas personalizados. Faz upgrade para PRO."
-            );
-        }
         this.theme = newTheme;
         this.registerEvent(new ThemeUpdatedEvent(this.id, this.username, LocalDateTime.now()));
     }
