@@ -52,6 +52,9 @@ public class ProfileEntity {
     @Column(name = "shadow_style", nullable = false, length = 20)
     private String shadowStyle;
 
+    @Column(name = "avatar_url", length = 500)
+    private String avatarUrl;
+
     // Subscription
     @Column(name = "plan_type", nullable = false, length = 20)
     private String planType;

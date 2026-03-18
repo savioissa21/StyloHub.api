@@ -42,6 +42,20 @@ public class CreatorPanelController {
         this.mapper = mapper;
     }
 
+    @PatchMapping("/profile/avatar")
+    @Operation(summary = "Atualiza a URL do avatar do perfil")
+    ProfileResponse updateAvatar(@AuthenticationPrincipal StyloHubUserPrincipal principal,
+                                 @RequestBody Map<String, String> body) {
+        Profile profile = profileUseCase.getProfileByUserId(principal.getUserIdAsUUID());
+        String url = body.get("url");
+        if (url == null || url.isBlank()) {
+            throw new IllegalArgumentException("Campo 'url' é obrigatório.");
+        }
+        return mapper.toCreatorResponse(
+                profileUseCase.updateAvatarUrl(profile.getId(), url)
+        );
+    }
+
     @GetMapping("/profile")
     @Operation(summary = "Retorna o perfil completo do criador autenticado")
     ProfileResponse getMyProfile(@AuthenticationPrincipal StyloHubUserPrincipal principal) {

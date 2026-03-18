@@ -18,6 +18,7 @@ public interface ManageProfileUseCase {
     Profile removeWidget(UUID profileId, UUID widgetId);
     Profile reorderWidgets(UUID profileId, List<UUID> orderedWidgetIds);
     Profile toggleWidgetVisibility(UUID profileId, UUID widgetId);
+    Profile updateAvatarUrl(UUID profileId, String avatarUrl);
     Profile upgradeSubscription(UUID profileId, PlanType newPlan);
     Profile getProfileByUsername(String username);
     Profile getProfileByUserId(UUID userId);

@@ -25,6 +25,7 @@ public class JpaProfileMapper {
                 .id(profile.getId())
                 .userId(profile.getUserId())
                 .username(profile.getUsername())
+                .avatarUrl(profile.getAvatarUrl())
                 .bgType(profile.getTheme().getBgType().name())
                 .bgValue(profile.getTheme().getBgValue())
                 .primaryColor(profile.getTheme().getPrimaryColor())
@@ -64,7 +65,7 @@ public class JpaProfileMapper {
 
         return Profile.reconstitute(
                 entity.getId(), entity.getUserId(), entity.getUsername(),
-                theme, subscription, widgets
+                entity.getAvatarUrl(), theme, subscription, widgets
         );
     }
 

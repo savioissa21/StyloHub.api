@@ -19,6 +19,7 @@ public class Profile extends AggregateRoot {
     private final UUID id;
     private final UUID userId;
     private String username;
+    private String avatarUrl;
     private Theme theme;
     private Subscription subscription;
     private final List<Widget> widgets;
@@ -101,10 +102,15 @@ public class Profile extends AggregateRoot {
      * Factory para reconstituição a partir da persistência.
      * Bypassa validações de negócio de criação e não dispara eventos.
      */
+    public void updateAvatar(String url) {
+        this.avatarUrl = url;
+    }
+
     public static Profile reconstitute(UUID id, UUID userId, String username,
-                                       Theme theme, Subscription subscription,
-                                       List<Widget> widgets) {
+                                       String avatarUrl, Theme theme,
+                                       Subscription subscription, List<Widget> widgets) {
         Profile profile = new Profile(id, userId, username, theme, subscription);
+        profile.avatarUrl = avatarUrl;
         profile.widgets.addAll(widgets);
         return profile;
     }
@@ -112,6 +118,7 @@ public class Profile extends AggregateRoot {
     public UUID getId() { return id; }
     public UUID getUserId() { return userId; }
     public String getUsername() { return username; }
+    public String getAvatarUrl() { return avatarUrl; }
     public Theme getTheme() { return theme; }
     public Subscription getSubscription() { return subscription; }
     public List<Widget> getWidgets() { return Collections.unmodifiableList(widgets); }

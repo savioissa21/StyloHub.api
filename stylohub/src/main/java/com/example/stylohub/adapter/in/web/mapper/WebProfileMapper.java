@@ -67,7 +67,8 @@ public class WebProfileMapper {
                 profile.getTheme().getBorderColor(),
                 profile.getTheme().getShadowStyle().name()
         );
-        return new ProfileResponse(profile.getId(), profile.getUsername(), theme,
+        return new ProfileResponse(profile.getId(), profile.getUsername(),
+                profile.getAvatarUrl(), theme,
                 profile.getSubscription().getPlan().name(), widgets);
     }
 

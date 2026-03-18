@@ -140,6 +140,13 @@ public class ProfileService implements ManageProfileUseCase {
     }
 
     @Override
+    public Profile updateAvatarUrl(UUID profileId, String avatarUrl) {
+        Profile profile = loadProfile(profileId);
+        profile.updateAvatar(avatarUrl);
+        return profileRepo.save(profile);
+    }
+
+    @Override
     public Profile upgradeSubscription(UUID profileId, PlanType newPlan) {
         Profile profile = loadProfile(profileId);
         profile.upgradeSubscription(new Subscription(newPlan));
