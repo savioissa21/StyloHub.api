@@ -6,5 +6,7 @@ public record ThemeResponse(
         String primaryColor,
         String textColor,
         String buttonStyle,
-        boolean isCustom
+        boolean isCustom,
+        String borderColor,
+        String shadowStyle
 ) {}

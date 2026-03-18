@@ -2,6 +2,7 @@ package com.example.stylohub.application.command;
 
 import com.example.stylohub.domain.model.BackgroundType;
 import com.example.stylohub.domain.model.ButtonStyle;
+import com.example.stylohub.domain.model.ShadowStyle;
 
 public record UpdateThemeCommand(
         BackgroundType bgType,
@@ -9,5 +10,7 @@ public record UpdateThemeCommand(
         String primaryColor,
         String textColor,
         ButtonStyle buttonStyle,
-        boolean isCustom
+        boolean isCustom,
+        String borderColor,
+        ShadowStyle shadowStyle
 ) {}

@@ -52,7 +52,8 @@ public class WebProfileMapper {
 
     public UpdateThemeCommand toThemeCommand(UpdateThemeRequest req) {
         return new UpdateThemeCommand(req.bgType(), req.bgValue(), req.primaryColor(),
-                req.textColor(), req.buttonStyle(), req.isCustom());
+                req.textColor(), req.buttonStyle(), req.isCustom(),
+                req.borderColor(), req.shadowStyle());
     }
 
     private ProfileResponse buildResponse(Profile profile, List<WidgetResponse> widgets) {
@@ -62,7 +63,9 @@ public class WebProfileMapper {
                 profile.getTheme().getPrimaryColor(),
                 profile.getTheme().getTextColor(),
                 profile.getTheme().getButtonStyle().name(),
-                profile.getTheme().isCustom()
+                profile.getTheme().isCustom(),
+                profile.getTheme().getBorderColor(),
+                profile.getTheme().getShadowStyle().name()
         );
         return new ProfileResponse(profile.getId(), profile.getUsername(), theme,
                 profile.getSubscription().getPlan().name(), widgets);

@@ -31,6 +31,8 @@ public class JpaProfileMapper {
                 .textColor(profile.getTheme().getTextColor())
                 .buttonStyle(profile.getTheme().getButtonStyle().name())
                 .isCustomTheme(profile.getTheme().isCustom())
+                .borderColor(profile.getTheme().getBorderColor())
+                .shadowStyle(profile.getTheme().getShadowStyle().name())
                 .planType(profile.getSubscription().getPlan().name())
                 .build();
 
@@ -49,7 +51,9 @@ public class JpaProfileMapper {
                 entity.getPrimaryColor(),
                 entity.getTextColor(),
                 ButtonStyle.valueOf(entity.getButtonStyle()),
-                entity.isCustomTheme()
+                entity.isCustomTheme(),
+                entity.getBorderColor() != null ? entity.getBorderColor() : "#D4AF37",
+                entity.getShadowStyle() != null ? ShadowStyle.valueOf(entity.getShadowStyle()) : ShadowStyle.NONE
         );
 
         Subscription subscription = new Subscription(PlanType.valueOf(entity.getPlanType()));

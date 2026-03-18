@@ -12,17 +12,26 @@ public class Theme {
     private final ButtonStyle buttonStyle;
     private final boolean isCustom; // Define se é um tema predefinido do sistema ou customizado pelo utilizador
 
-    public Theme(BackgroundType bgType, String bgValue, String primaryColor, String textColor, ButtonStyle buttonStyle, boolean isCustom) {
-        if (bgType == null || bgValue == null || primaryColor == null || textColor == null || buttonStyle == null) {
+    // PRO fields
+    private final String borderColor;   // Cor da borda dos botões (hex)
+    private final ShadowStyle shadowStyle; // Efeito de sombra nos botões
+
+    public Theme(BackgroundType bgType, String bgValue, String primaryColor, String textColor,
+                 ButtonStyle buttonStyle, boolean isCustom,
+                 String borderColor, ShadowStyle shadowStyle) {
+        if (bgType == null || bgValue == null || primaryColor == null || textColor == null
+                || buttonStyle == null || borderColor == null || shadowStyle == null) {
             throw new IllegalArgumentException("Nenhum atributo do tema pode ser nulo.");
         }
-        
+
         this.bgType = bgType;
         this.bgValue = bgValue;
         this.primaryColor = primaryColor;
         this.textColor = textColor;
         this.buttonStyle = buttonStyle;
         this.isCustom = isCustom;
+        this.borderColor = borderColor;
+        this.shadowStyle = shadowStyle;
 
         this.validateContrast();
     }
@@ -35,8 +44,6 @@ public class Theme {
         if (this.primaryColor.equalsIgnoreCase(this.textColor)) {
             throw new IllegalArgumentException("A cor do texto não pode ser igual à cor primária do botão.");
         }
-        
-        // Aqui poderíamos ter cálculos avançados de contraste de luminância (WCAG) no futuro!
     }
 
     public BackgroundType getBgType() { return bgType; }
@@ -45,4 +52,6 @@ public class Theme {
     public String getTextColor() { return textColor; }
     public ButtonStyle getButtonStyle() { return buttonStyle; }
     public boolean isCustom() { return isCustom; }
+    public String getBorderColor() { return borderColor; }
+    public ShadowStyle getShadowStyle() { return shadowStyle; }
 }

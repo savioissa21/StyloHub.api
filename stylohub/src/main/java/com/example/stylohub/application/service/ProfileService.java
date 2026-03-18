@@ -38,9 +38,10 @@ public class ProfileService implements ManageProfileUseCase {
         }
 
         Theme defaultTheme = new Theme(
-                BackgroundType.SOLID_COLOR, "#FFFFFF",
-                "#000000", "#FFFFFF",
-                ButtonStyle.ROUNDED, false
+                BackgroundType.SOLID_COLOR, "#09090B",
+                "#D4AF37", "#FFFFFF",
+                ButtonStyle.ROUNDED, false,
+                "#D4AF37", ShadowStyle.NONE
         );
 
         Profile profile = new Profile(
@@ -66,7 +67,9 @@ public class ProfileService implements ManageProfileUseCase {
                 command.primaryColor(),
                 command.textColor(),
                 command.buttonStyle(),
-                command.isCustom()
+                command.isCustom(),
+                command.borderColor(),
+                command.shadowStyle()
         );
         profile.updateTheme(newTheme);
 

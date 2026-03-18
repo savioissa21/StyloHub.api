@@ -45,6 +45,13 @@ public class ProfileEntity {
     @Column(name = "is_custom_theme", nullable = false)
     private boolean isCustomTheme;
 
+    // PRO theme fields
+    @Column(name = "border_color", nullable = false, length = 7)
+    private String borderColor;
+
+    @Column(name = "shadow_style", nullable = false, length = 20)
+    private String shadowStyle;
+
     // Subscription
     @Column(name = "plan_type", nullable = false, length = 20)
     private String planType;
