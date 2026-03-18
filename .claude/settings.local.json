@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(docker ps:*)"
+      "Bash(docker ps:*)",
+      "Bash(find /c/Users/2023101202010017/Desktop/stylohub/StyloHub -type f \\\\\\(-name *.java -o -name *.tsx -o -name *.ts -o -name *.jsx -o -name *.js \\\\\\) ! -path */node_modules/* ! -path */.next/* ! -path */target/*)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r \"FORM\\\\|LEAD_FORM\\\\|lead.form\\\\|leadForm\" /c/Users/2023101202010017/Desktop/stylohub/StyloHub/front-stylohub/src --include=*.ts --include=*.tsx)"
     ]
   }
 }

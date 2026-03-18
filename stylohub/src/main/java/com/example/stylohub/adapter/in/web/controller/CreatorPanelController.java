@@ -2,6 +2,7 @@ package com.example.stylohub.adapter.in.web.controller;
 
 import com.example.stylohub.adapter.in.web.dto.*;
 import com.example.stylohub.adapter.in.web.mapper.WebProfileMapper;
+import com.example.stylohub.application.port.in.ManageLeadsUseCase;
 import com.example.stylohub.application.port.in.ManageProfileUseCase;
 import com.example.stylohub.application.port.out.ImageStoragePort;
 import com.example.stylohub.domain.model.Profile;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,13 +28,16 @@ import java.util.UUID;
 public class CreatorPanelController {
 
     private final ManageProfileUseCase profileUseCase;
+    private final ManageLeadsUseCase manageLeadsUseCase;
     private final ImageStoragePort imageStorage;
     private final WebProfileMapper mapper;
 
     public CreatorPanelController(ManageProfileUseCase profileUseCase,
+                                  ManageLeadsUseCase manageLeadsUseCase,
                                   ImageStoragePort imageStorage,
                                   WebProfileMapper mapper) {
         this.profileUseCase = profileUseCase;
+        this.manageLeadsUseCase = manageLeadsUseCase;
         this.imageStorage = imageStorage;
         this.mapper = mapper;
     }
@@ -103,6 +108,23 @@ public class CreatorPanelController {
         return mapper.toCreatorResponse(
                 profileUseCase.reorderWidgets(profile.getId(), request.orderedWidgetIds())
         );
+    }
+
+    @GetMapping("/profile/leads")
+    @Operation(summary = "Lista os leads capturados pelo perfil do criador")
+    List<LeadResponse> getLeads(@AuthenticationPrincipal StyloHubUserPrincipal principal) {
+        Profile profile = profileUseCase.getProfileByUserId(principal.getUserIdAsUUID());
+        return manageLeadsUseCase.getLeadsByProfileId(profile.getId())
+                .stream().map(LeadResponse::from).toList();
+    }
+
+    @DeleteMapping("/profile/leads/{leadId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Remove um lead capturado")
+    void deleteLead(@AuthenticationPrincipal StyloHubUserPrincipal principal,
+                    @PathVariable UUID leadId) {
+        Profile profile = profileUseCase.getProfileByUserId(principal.getUserIdAsUUID());
+        manageLeadsUseCase.deleteLead(profile.getId(), leadId);
     }
 
     @PostMapping(value = "/profile/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
